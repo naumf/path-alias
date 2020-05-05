@@ -4,6 +4,7 @@ const Module = require('module')
 const path = require('path')
 
 const originalRequire = Module.prototype.require
+var originalPathResolve = path.resolve
 
 function setup(jsconfigPath, startChar = '@') {
   const jsConfig = require(jsconfigPath)
@@ -18,6 +19,21 @@ function setup(jsconfigPath, startChar = '@') {
       ),
       length: alias.length
     }
+  }
+
+  path.resolve = function () {
+    let alias
+    if (
+      !arguments ||
+      !arguments[0] ||
+      arguments[0].slice(0, 1) !== startChar ||
+      !(alias = aliases[arguments[0].slice(0, arguments[0].indexOf('/') + 1)])
+    ) {
+      return originalPathResolve.apply(this, arguments)
+    }
+
+    arguments[0] = path.join(alias.path, arguments[0].slice(alias.length))
+    return originalPathResolve.apply(this, arguments)
   }
 
   Module.prototype.require = function () {
