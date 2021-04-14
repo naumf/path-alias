@@ -1,3 +1,6 @@
+# DEPRECATED
+Deprecated in favor of: https://nodejs.org/api/packages.html#packages_subpath_patterns
+
 # path-alias
 
 Uses path aliases defined in `jsconfig` under `compilerOptions.paths`.
